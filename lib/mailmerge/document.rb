@@ -1,14 +1,27 @@
-require 'zip'
+require "zip"
+require "nokogiri"
+require "mailmerge/document/fields"
 
 module Mailmerge
   class Document
+    attr_reader :fields
     
     def initialize(file, options={}, &block)
       @file = file
       @zipfile = Zip::File.open file
 
+      # TODO: find document from content types file with type:
+      # application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml
       entry = @zipfile.get_entry "word/document.xml"
       @xmldata = entry.get_input_stream.read
+      @fields = Array.new
+      parse_fields
+    end
+
+    def parse_fields
+      Nokogiri::XML(@xmldata).xpath('//w:fldSimple').each do |field|
+        @fields << Mailmerge::Fields::SimpleField.new(field)
+      end
     end
 
     def write
@@ -29,6 +42,5 @@ module Mailmerge
 
       # File.open(new_path, "w") {|f| f.write(buffer.string) }    
     end
-
   end
 end
