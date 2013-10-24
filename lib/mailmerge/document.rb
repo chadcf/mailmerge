@@ -6,23 +6,31 @@ module Mailmerge
   class Document
     attr_reader :fields
     
+    DOCUMENT_TYPE = "application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"
+
     def initialize(file, options={}, &block)
       @file = file
-      @zipfile = Zip::File.open file
+      @zipfile = Zip::File.open @file
 
-      # TODO: find document from content types file with type:
-      # application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml
-      entry = @zipfile.get_entry "word/document.xml"
-      @xmldata = entry.get_input_stream.read
-      @fields = Array.new
+      load_document
       parse_fields
     end
 
-    def parse_fields
-      Nokogiri::XML(@xmldata).xpath('//w:fldSimple').each do |field|
-        @fields << Mailmerge::Fields::SimpleField.new(field)
+    private
+      def load_document
+        index = @zipfile.get_entry "[Content_Types].xml"
+        data = index.get_input_stream.read
+        docnode = Nokogiri::XML(data).xpath("//xmlns:Override[@ContentType='#{DOCUMENT_TYPE}']").first
+        entry = docnode.attributes['PartName'].value
+        @xmldata = @zipfile.get_entry(entry[1..-1]).get_input_stream.read
       end
-    end
+
+      def parse_fields
+        @fields = Array.new
+        Nokogiri::XML(@xmldata).xpath('//w:fldSimple').each do |field|
+          @fields << Mailmerge::Fields::SimpleField.new(field)
+        end
+      end
 
     def write
       # buffer = Zip::OutputStream.write_buffer do |out|
