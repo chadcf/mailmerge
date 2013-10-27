@@ -12,4 +12,10 @@ describe Mailmerge::Document do
     document = Mailmerge::Document.new(file)
     document.fields.size.must_equal 2
   end
+
+  it "writes the file" do
+    document = Mailmerge::Document.new(file)
+    document.fields.first.value = 'Person'
+    document.write("out.docx")
+  end
 end

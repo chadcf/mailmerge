@@ -16,4 +16,5 @@ describe Mailmerge::Fields::SimpleField do
     @document.fields.first.value = "New Value"
     @document.fields.first.value.must_equal "New Value"
   end
+
 end
