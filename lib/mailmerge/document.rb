@@ -41,11 +41,7 @@ module Mailmerge
       end
 
       def parse_fields
-        fields = []
-        @main_xml.xpath('//w:fldSimple').each do |field|
-          fields << Mailmerge::Fields::SimpleField.new(field, @main_xml)
-        end
-        fields
+        @main_xml.xpath('//w:fldSimple').map {|f| Mailmerge::Fields::SimpleField.new(f, @main_xml)}
       end
 
       def build_zip

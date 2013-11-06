@@ -9,13 +9,12 @@ module Mailmerge::Fields
       @xmldata = field
       @document = document
       @value = ""
-      parse_name
+      @name = parse_name
       replace_xml
     end
 
     def parse_name
-      value = @xmldata.attributes['instr'].value
-      @name = value.match(FIELD_RE)[1]
+      @xmldata.attributes['instr'].value.match(FIELD_RE)[1]
     end
 
     def replace_xml
