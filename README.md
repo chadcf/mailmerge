@@ -1,6 +1,14 @@
 # Mailmerge
 
-TODO: Write a gem description
+A ruby library for working with Microsoft Word / Open Office mailmerge documents
+
+# Status
+
+Rough. Right now basic fldSimple merge fields are supported with complex fields
+coming soon and support for more instructions than just MERGEFIELD. 
+
+The code is probably going to be rough as my knowledge of .docx formatting
+builds...
 
 ## Installation
 

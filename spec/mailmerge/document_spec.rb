@@ -2,7 +2,7 @@ require 'minitest/autorun'
 require 'mailmerge'
 
 describe Mailmerge::Document do
-  let(:simplefile) { 'spec/support/test.docx' }
+  let(:simplefile) { 'spec/support/simple.docx' }
   let(:invalidfile) { 'spec/support/test.pdf' }
 
   it "opens a document" do
@@ -11,7 +11,7 @@ describe Mailmerge::Document do
 
   it "parses fields" do
     document = Mailmerge::Document.new(simplefile)
-    document.fields.size.must_equal 2
+    document.fields.size.must_equal 3
   end
 
   it "writes the file" do
